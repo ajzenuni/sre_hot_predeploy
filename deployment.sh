@@ -63,16 +63,25 @@ echo -e "API Token - $API_TOKEN"
 echo "##################"
 
 ## Deploy Application
+echo -e "${YLW}Deploying Application${NC}"
+APP=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/application.json)
+RESPONSE=$(curl -X POST "$DT_HOST/api/config/v1/applications/web" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$APP")
+echo -e "${YLW}$RESPONSE${NC}"
 
+APP_DETECTIONRULE=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/application_detectionrule.json | sed "s,DTUID,$DTU_ID," | sed "s,APPID,$($RESPONSE | jq -r .id),")
+RESPONSE=$(curl -X POST "$DT_HOST/api/config/v1/applicationDetectionRules" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$APP_DETECTIONRULE")
+echo -e "${YLW}$RESPONSE${NC}"
 
 ## Deploy Synthetic Monitors
 echo -e "${YLW}Deploying Synthetic Monitors${NC}"
-sed -i "s,DTUID,$DTU_ID," .$HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_easytravel.json
+#sed -i "s,DTUID,$DTU_ID," .$HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_easytravel.json
 
-SYNTH_EASYTRAVEL=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_easytravel.json)
+echo -e "Synthetic  - Prod Easytravel Homepage"
+SYNTH_EASYTRAVEL=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_easytravel.json | sed "s,DTUID,$DTU_ID,")
 RESPONSE=$(curl -X POST "$DT_HOST/api/v1/synthetic/monitors" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$SYNTH_EASYTRAVEL")
 echo -e "${YLW}$RESPONSE${NC}"
 
+echo -e "Synthetic - HTTPSTAT"
 SYNTH_HTTPSTAT=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_httpstat.json)
 RESPONSE=$(curl -X POST "$DT_HOST/api/v1/synthetic/monitors" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$SYNTH_HTTPSTAT")
 echo -e "${YLW}$RESPONSE${NC}"
