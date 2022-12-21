@@ -68,7 +68,9 @@ APP=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/application.json)
 RESPONSE=$(curl -X POST "$DT_HOST/api/config/v1/applications/web" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$APP")
 echo -e "${YLW}$RESPONSE${NC}"
 
-APP_DETECTIONRULE=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/application_detectionrule.json | sed "s,DTUID,$DTU_ID," | sed "s,APPID,$($RESPONSE | jq -r .id),")
+sleep 1s
+APP_ID=$(echo $RESPONSE | jq -r .id)
+APP_DETECTIONRULE=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/application_detectionrule.json | sed "s,DTUID,$DTU_ID," | sed "s/APPID/$APP_ID/")
 RESPONSE=$(curl -X POST "$DT_HOST/api/config/v1/applicationDetectionRules" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$APP_DETECTIONRULE")
 echo -e "${YLW}$RESPONSE${NC}"
 
