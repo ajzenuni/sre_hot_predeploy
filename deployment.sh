@@ -12,6 +12,9 @@
 #### API_TOKEN : api token with the following right : Access problem and event feed, metrics and topology, ExternalSyntheticIntegration
 #########################################################################################################
 
+YLW='\033[1;33m'
+NC='\033[0m'
+
 while [ $# -gt 0 ]; do
   case "$1" in
   --environment-url)
@@ -48,15 +51,28 @@ if [ -z "$API_TOKEN" ]; then
   exit 1
 fi
 
-DT_HOST=$(echo $ENVIRONMENT_URL | grep -oP 'https://\K\S+')
+DT_HOST=$(echo $ENVIRONMENT_URL)
 
 HOME_SCRIPT_DIRECTORY=/home/dtu_training/sre_hot_predeploy/
 echo "Script folder is $HOME_SCRIPT_DIRECTORY"
 
 echo "##################"
-echo "DT HOST - $DT_HOST"
-echo "DTU ID - $DTU_ID"
-echo "API Token - $API_TOKEN"
+echo -e "${YLW}DT HOST - $DT_HOST ${NC}"
+echo -e "${YLW}DTU ID - $DTU_ID ${NC}"
+echo -e "${YLW}API Token - $API_TOKEN ${NC}"
 echo "##################"
 
+## Deploy Application
+
+
+## Deploy Synthetic Monitors
+echo -e "${YLW}Deploying Synthetic Monitors${NC}"
 sed -i "s,DTUID,$DTU_ID," $HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_easytravel.json
+
+SYNTH_EASYTRAVEL = $(cat $HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_easytravel.json)
+RESPONSE = $(curl -X POST "$DT_API_URL/api/v1/synthetic/monitors" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$SYNTH_EASYTRAVEL")
+echo -e "${YLW}$RESPONSE${NC}"
+
+SYNTH_HTTPSTAT = $(cat $HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_httpstat.json)
+RESPONSE = $(curl -X POST "$DT_API_URL/api/v1/synthetic/monitors" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$SYNTH_HTTPSTAT")
+echo -e "${YLW}$RESPONSE${NC}"
