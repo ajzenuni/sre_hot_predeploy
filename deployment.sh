@@ -50,9 +50,13 @@ fi
 
 DT_HOST=$(echo $ENVIRONMENT_URL | grep -oP 'https://\K\S+')
 
-HOME_SCRIPT_DIRECTORY=/home/dtu_training/pre_deploy
+HOME_SCRIPT_DIRECTORY=/home/dtu_training/sre_hot_predeploy/
 echo "Script folder is $HOME_SCRIPT_DIRECTORY"
 
-echo $DT_HOST
-echo $DTU_ID
-echo $API_TOKEN
+echo "##################"
+echo "DT HOST - $DT_HOST"
+echo "DTU ID - $DTU_ID"
+echo "API Token - $API_TOKEN"
+echo "##################"
+
+sed -i "s,DTUID,$DTU_ID," $HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_easytravel.json
