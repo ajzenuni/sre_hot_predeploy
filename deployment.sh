@@ -117,6 +117,11 @@ SYNTH_EASYTRAVEL=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_easytravel.jso
 RESPONSE=$(curl -X POST "$DT_HOST/api/v1/synthetic/monitors" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$SYNTH_EASYTRAVEL")
 echo -e "${YLW}$RESPONSE${NC}"
 
+echo -e "Synthetic  - Prod Easytravel BookTrip"
+SYNTH_EASYTRAVEL_ADVANCE=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_easytravel_advance.json | sed "s,DTUID,$DTU_ID,")
+RESPONSE=$(curl -X POST "$DT_HOST/api/v1/synthetic/monitors" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$SYNTH_EASYTRAVEL_ADVANCE")
+echo -e "${YLW}$RESPONSE${NC}"
+
 echo -e "Synthetic - HTTPSTAT"
 SYNTH_HTTPSTAT=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/synthetic_httpstat.json)
 RESPONSE=$(curl -X POST "$DT_HOST/api/v1/synthetic/monitors" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$SYNTH_HTTPSTAT")
