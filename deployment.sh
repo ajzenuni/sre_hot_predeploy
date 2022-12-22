@@ -128,3 +128,14 @@ echo -e "${YLW}Deploying Perform SRE - SLO HoT Dashboard${NC}"
 DASHBOARD=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/dashboard.json | sed "s,YEAR,$YEAR," | sed "s,EMAIL,$EMAIL,")
 RESPONSE=$(curl -X POST "$DT_HOST/api/config/v1/dashboards" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$DASHBOARD")
 echo -e "${YLW}$RESPONSE${NC}"
+
+## Deploy Tag/Management Zone
+echo -e "${YLW}Deploying Autotag${NC}"
+TAG=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/tag.json)
+RESPONSE=$(curl -X POST "$DT_HOST/api/config/v1/autoTags" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$TAG")
+echo -e "${YLW}$RESPONSE${NC}"
+
+echo -e "${YLW}Deploying Management Zone${NC}"
+MZ=$(cat $HOME_SCRIPT_DIRECTORY/dynatrace/managementzone.json)
+RESPONSE=$(curl -X POST "$DT_HOST/api/config/v1/managementZones" -H "accept: application/json; charset=utf-8" -H "Authorization: Api-Token $API_TOKEN" -H "Content-Type: application/json; charset=utf-8" -d "$MZ")
+echo -e "${YLW}$RESPONSE${NC}"
