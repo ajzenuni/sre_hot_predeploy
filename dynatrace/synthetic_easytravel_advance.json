@@ -268,7 +268,8 @@
       ]
     },
     "locations": [
-      "GEOLOCATION-5B3CDE358F4D4B31"
+      "GEOLOCATION-9999453BE4BDB3CD",
+      "GEOLOCATION-0DF9A0E1095A5A62"
     ],
     "anomalyDetection": {
       "outageHandling": {
